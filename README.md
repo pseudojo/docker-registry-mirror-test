@@ -32,21 +32,51 @@ docker ps -a | egrep 'Up .+ registry'
 curl -k https://registry.localhost/v2/_catalog
 
 # test mirroring docker images
-docker pull busybox sonatype/nexus
+docker pull busybox
+docker pull sonatype/nexus
 
 # check mirroring
+# ex) {"repositories":["library/busybox","sonatype/nexus"]}
+curl -k https://registry.localhost/v2/_catalog
+
+#####################################################3
+# when it works remote proxy(like mirroring), can't push images
+
+# stop registry
+docker rm -f registry
+
+# disable proxy as mirroring registry
+export PROXY=0
+
+# start docker registry
+./start-registry.sh
+
+# locally docker images like public images
+docker tag busybox registry.localhost/library/busybox-localtest
+docker push registry.localhost/library/busybox-localtest
+
+# test registry
+# ex) {"repositories":["library/busybox","library/busybox-localtest","sonatype/nexus"]}
 curl -k https://registry.localhost/v2/_catalog
 
 # remove local images
-docker rmi busybox sonatype/nexus
+docker rmi busybox sonatype/nexus registry.localhost/library/busybox-localtest
 
 # disable public network
 sudo systemctl stop NetworkManager
 
-# retry pull from local registry
-docker pull busybox sonatype/nexus
+# test : retry pull from local registry
+docker pull busybox-localtest
+docker pull sonatype/nexus
+docker pull busybox 
 
 # check local images
-docker images | egrep 'busybox|sonatype/nexus'
+# ex)
+# REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+# busybox-localtest   latest              19485c79a9bb        2 weeks ago         1.22MB
+# busybox             latest              19485c79a9bb        2 weeks ago         1.22MB
+# sonatype/nexus      latest              9db1ff0a3c18        5 weeks ago         449MB
+# 
+docker images
 
 ```
