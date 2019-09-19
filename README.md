@@ -14,9 +14,11 @@ sudo systemctl daemon-reload
 # restart docker
 sudo systemctl restart docker
 
-
 # create self-signed certificate
 ./create-selfsigned-certificate.sh
+
+# remove 'registry' container
+docker rm -f registry
 
 # start docker registry
 ./start-registry.sh
@@ -26,6 +28,7 @@ sudo systemctl restart docker
 docker ps -a | egrep 'Up .+ registry'
 
 # test registry
+# ex) {"repositories":[]}
 curl -k https://registry.localhost/v2/_catalog
 
 # test mirroring docker images
