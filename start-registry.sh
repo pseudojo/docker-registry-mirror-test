@@ -4,7 +4,7 @@ PROXY=1
 REGISTRY_OPTIONS="-dt -p 443:5000 --name registry 
     -v $(pwd)/config.yml:/etc/docker/registry/config.yml \
     -v $(pwd)/certs:/etc/docker/registry/certs \
-    -v $(pwd)/registry:/var/lib/registry \ "
+    -v $(pwd)/registry:/var/lib/registry "
 
 rm -rf $(pwd)/registry
 mkdir -p $(pwd)/registry
