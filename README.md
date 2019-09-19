@@ -1,5 +1,9 @@
 ## test mirror using docker-registry
-
+- Ref.
+  - https://planet.jboss.org/post/deploy_and_configure_a_local_docker_caching_proxy
+  - http://www.kwangsiklee.com/2017/08/사내-docker-저장소registry-구축하기/
+  - https://zetawiki.com/wiki/리눅스_자체서명_SSL_인증서_생성
+  
 ```
 # in CentOS 7
 
@@ -41,7 +45,6 @@ curl -k https://registry.localhost/v2/_catalog
 
 #####################################################3
 # when it works remote proxy(like mirroring), can't push images
-
 # stop registry
 docker rm -f registry
 
@@ -65,7 +68,7 @@ docker rmi busybox sonatype/nexus registry.localhost/library/busybox-localtest
 # disable public network
 sudo systemctl stop NetworkManager
 
-# test : retry pull from local registry
+# test : retry pull like public image from local registry
 docker pull busybox-localtest
 docker pull sonatype/nexus
 docker pull busybox 
@@ -79,4 +82,5 @@ docker pull busybox
 # 
 docker images
 
+unset PROXY
 ```
